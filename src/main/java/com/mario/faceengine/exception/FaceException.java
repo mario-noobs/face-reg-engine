@@ -9,7 +9,6 @@ public class FaceException extends Exception {
         super(errorCode.getMessage());
         this.errorCode = errorCode;
     }
-
     public ErrorCodeMessage getErrorCode() {
         return errorCode;
     }
