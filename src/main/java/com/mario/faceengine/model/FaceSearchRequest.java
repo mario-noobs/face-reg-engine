@@ -2,7 +2,7 @@ package com.mario.faceengine.model;
 
 import org.json.JSONObject;
 
-public class FaceRegistrationRequest {
+public class FaceSearchRequest {
 
     private String userId;
     private String imageBase64;

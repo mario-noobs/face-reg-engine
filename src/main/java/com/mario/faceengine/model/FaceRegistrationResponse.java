@@ -1,12 +1,10 @@
 package com.mario.faceengine.model;
 
-public class FaceRegistrationResponse {
+public class FaceRegistrationResponse extends BasicResponse {
 
     private String userId;
-    private String imageBase64;
-    private String algDet;
-    private String algReg;
-    private String requestId;
+    private String type;
+    private String createDate;
 
     public String getUserId() {
         return userId;
@@ -16,35 +14,19 @@ public class FaceRegistrationResponse {
         this.userId = userId;
     }
 
-    public String getImageBase64() {
-        return imageBase64;
+    public String getType() {
+        return type;
     }
 
-    public void setImageBase64(String imageBase64) {
-        this.imageBase64 = imageBase64;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public String getAlgDet() {
-        return algDet;
+    public String getCreateDate() {
+        return createDate;
     }
 
-    public void setAlgDet(String algDet) {
-        this.algDet = algDet;
-    }
-
-    public String getAlgReg() {
-        return algReg;
-    }
-
-    public void setAlgReg(String algReg) {
-        this.algReg = algReg;
-    }
-
-    public String getRequestId() {
-        return requestId;
-    }
-
-    public void setRequestId(String requestId) {
-        this.requestId = requestId;
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
     }
 }
