@@ -1,5 +1,8 @@
 package com.mario.faceengine.model;
 
+import com.mario.faceengine.helpers.Utils;
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -60,5 +63,22 @@ public class FaceRequest {
                 && this.imageBase64 != null
                 && this.userId != null
                 && this.type != null;
+    }
+
+    @Override
+    public String toString() {
+        return toJson().toString();
+    }
+
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+
+        json.put("userId", userId);
+        json.put("requestId", requestId);
+        json.put("imageBase64", Utils.hashSHA1(imageBase64));
+        json.put("requestId", requestId);
+        json.put("flow", type);
+
+        return json;
     }
 }

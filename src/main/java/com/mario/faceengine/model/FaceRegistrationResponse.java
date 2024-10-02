@@ -1,5 +1,7 @@
 package com.mario.faceengine.model;
 
+import org.json.JSONObject;
+
 public class FaceRegistrationResponse extends BasicResponse {
 
     private String userId;
@@ -28,5 +30,20 @@ public class FaceRegistrationResponse extends BasicResponse {
 
     public void setCreateDate(String createDate) {
         this.createDate = createDate;
+    }
+
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+
+        json.put("userId", userId);
+        json.put("createDate", createDate);
+        json.put("flow", type);
+
+        return json;
+    }
+
+    @Override
+    public String toString() {
+        return toJson().toString();
     }
 }

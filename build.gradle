@@ -30,6 +30,9 @@ dependencies {
 // https://mvnrepository.com/artifact/com.squareup.okhttp/logging-interceptor
 	implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0' // Replace with the latest version
 	implementation 'org.json:json:20240303'
+	// https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
+	implementation 'javax.xml.bind:jaxb-api:2.1'
+
 
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }

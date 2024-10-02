@@ -32,4 +32,20 @@ public class FaceSearchResponse extends BasicResponse {
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
+    public JSONObject toJson() {
+
+        JSONObject json = super.toJson();;
+
+        json.put("userId", userId);
+        json.put("requestId", requestId);
+        json.put("searchData", searchData);
+
+        return json;
+    }
+
+    @Override
+    public String toString() {
+        return toJson().toString();
+    }
 }
