@@ -1,5 +1,6 @@
 package com.mario.faceengine.model;
 
+import com.mario.faceengine.helpers.Utils;
 import org.json.JSONObject;
 
 public class FaceSearchRequest {
@@ -61,14 +62,7 @@ public class FaceSearchRequest {
 
     @Override
     public String toString() {
-        return "FaceRegistrationRequest{" +
-                "userId='" + userId + '\'' +
-                ", imageBase64='" + imageBase64 + '\'' +
-                ", algDet='" + algDet + '\'' +
-                ", algReg='" + algReg + '\'' +
-                ", requestId='" + requestId + '\'' +
-                ", type='" + type + '\'' +
-                '}';
+        return toJson().toString();
     }
 
     public JSONObject toJson() {
@@ -77,7 +71,7 @@ public class FaceSearchRequest {
         json.put("userId", userId);
         json.put("algorithmDet", algDet);
         json.put("algorithmReg", algReg);
-        json.put("imageBase64", imageBase64);
+        json.put("imageBase64", Utils.hashSHA1(imageBase64));
         json.put("requestId", requestId);
         json.put("flow", type);
 
