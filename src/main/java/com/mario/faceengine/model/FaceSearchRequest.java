@@ -71,7 +71,7 @@ public class FaceSearchRequest {
         json.put("userId", userId);
         json.put("algorithmDet", algDet);
         json.put("algorithmReg", algReg);
-        json.put("imageBase64", Utils.hashSHA1(imageBase64));
+        json.put("imageBase64", imageBase64);
         json.put("requestId", requestId);
         json.put("flow", type);
 
