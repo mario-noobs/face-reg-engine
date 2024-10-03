@@ -24,7 +24,7 @@ public class FaceRequest {
     private String generateRequestId() {
         int number = getNextSequenceNumber();
         String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        return String.format("%s_%s_%d_%s", "Request", appName, number, timestamp);
+        return String.format("%s_%ss%d_%s", "transaction", appName, number, timestamp);
     }
 
     public String getRequestId() {

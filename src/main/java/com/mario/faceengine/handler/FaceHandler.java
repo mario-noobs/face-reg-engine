@@ -1,8 +1,10 @@
 package com.mario.faceengine.handler;
 
+import com.mario.faceengine.config.AppConfig;
 import com.mario.faceengine.entity.FaceImage;
 import com.mario.faceengine.exception.ErrorCodeMessage;
 import com.mario.faceengine.exception.FaceException;
+import com.mario.faceengine.minio.S3Client;
 import com.mario.faceengine.model.*;
 import com.mario.faceengine.repository.FaceImageRepository;
 import com.mario.faceengine.service.FaceService;
@@ -27,6 +29,9 @@ public class FaceHandler {
             throw new FaceException(ErrorCodeMessage.INVALID_INPUT);
         }
 
+        String filename = createFileName(request);
+        request.setFilename(filename);
+
         FaceRegistrationRequest faceRegistrationRequest = new FaceRegistrationRequest();
         faceRegistrationRequest.setRequestId(request.getRequestId());
         faceRegistrationRequest.setUserId(request.getUserId());
@@ -35,7 +40,10 @@ public class FaceHandler {
         faceRegistrationRequest.setImageBase64(request.getImageBase64());
         faceRegistrationRequest.setType(request.getType());
 
+        FaceImage faceImage = mapToFaceImageDto(request);
+
         try {
+            faceImageRepository.save(faceImage);
             FaceRegistrationResponse faceRegistrationResponse = this.faceService.registerFace(faceRegistrationRequest);
 
             if (!faceRegistrationResponse.getCode().equals(ErrorCodeMessage.SUCCESS.getCode())) {
@@ -76,7 +84,12 @@ public class FaceHandler {
 
         try {
             faceImageRepository.save(faceImage);
+
             response = this.faceService.recognize(faceSearchRequest);
+            S3Client s3Client = new S3Client();
+
+            AppConfig appConfig = AppConfig.getInstance();
+            s3Client.upload(filename, faceSearchRequest.getImageBase64(), appConfig);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,6 +116,5 @@ public class FaceHandler {
         return request.getType()+ "_" +
                 request.getRequestId() + "_" + request.getUserId() + ".jpg";
     }
-
 
 }

@@ -23,6 +23,7 @@ public class FaceController {
     @PostMapping("/register-identity")
     public ResponseEntity<FaceResponse> register(@RequestBody FaceRequest request) {
         String method = "register";
+        request.setType("REGISTER");
         LogUtils.logRequest(method, request.toString());
         FaceResponse response = new FaceResponse();
         try {
@@ -42,7 +43,8 @@ public class FaceController {
 
     @PostMapping("/recognize-identity")
     public ResponseEntity<FaceSearchResponse> recognize(@RequestBody FaceRequest request) {
-        String method = "recognize";
+        String method = "recognize-identity";
+        request.setType("RECOGNIZE");
         LogUtils.logRequest(method, request.toString());
         FaceSearchResponse response = new FaceSearchResponse();
         try {

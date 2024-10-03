@@ -4,6 +4,7 @@ import com.mario.faceengine.config.AppConfig;
 import com.mario.faceengine.exception.ErrorCodeMessage;
 import com.mario.faceengine.exception.FaceException;
 import com.mario.faceengine.helpers.HttpClient;
+import com.mario.faceengine.logging.LogUtils;
 import com.mario.faceengine.model.*;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class FaceServiceImpl implements FaceService {
 
     @Override
     public FaceSearchResponse recognize(FaceSearchRequest request) {
-
+        LogUtils.logRequest("recognize", request.getUserId());
         FaceSearchResponse response = new FaceSearchResponse();
 
         try {
@@ -57,6 +58,7 @@ public class FaceServiceImpl implements FaceService {
             response.setCode(ErrorCodeMessage.NETWORK_ERROR.getCode());
             response.setMessage(ErrorCodeMessage.NETWORK_ERROR.getMessage());
         }
+        LogUtils.logResponse("recognize", response.getSearchData().toString());
         return response;
     }
 }

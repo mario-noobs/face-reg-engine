@@ -24,16 +24,22 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.2.5'
-	implementation 'org.mariadb.jdbc:mariadb-java-client:2.7.3' // Check for the latest version
-// https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
+	implementation 'org.mariadb.jdbc:mariadb-java-client:3.1.4' // Check for the latest version
+
+	// https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
 	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
-// https://mvnrepository.com/artifact/com.squareup.okhttp/logging-interceptor
+	// https://mvnrepository.com/artifact/com.squareup.okhttp/logging-interceptor
 	implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0' // Replace with the latest version
 	implementation 'org.json:json:20240303'
 	// https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api
 	implementation 'javax.xml.bind:jaxb-api:2.1'
 
-
+	// https://mvnrepository.com/artifact/org.projectlombok/lombok
+	compileOnly 'org.projectlombok:lombok:1.18.30'
+// https://mvnrepository.com/artifact/io.minio/minio
+	implementation 'io.minio:minio:8.5.2'
+// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
