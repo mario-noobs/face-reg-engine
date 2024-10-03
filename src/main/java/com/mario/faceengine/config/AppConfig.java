@@ -4,10 +4,10 @@ public class AppConfig {
     private static final AppConfig INSTANCE = new AppConfig();
 
     private final int someTimeout;
-    private String faceHostNameUrl;
-    private String registerPath;
-    private String recognizePath;
-
+    private final String faceHostNameUrl;
+    private final String registerPath;
+    private final String recognizePath;
+    
     // Private constructor to prevent instantiation
     private AppConfig() {
         this.someTimeout = Integer.parseInt(getEnvVar("APP_TIMEOUT", "30"));

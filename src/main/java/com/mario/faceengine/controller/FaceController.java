@@ -58,6 +58,4 @@ public class FaceController {
         LogUtils.logResponse(method, response.toString());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
-
 }

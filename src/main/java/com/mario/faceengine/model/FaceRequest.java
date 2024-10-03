@@ -15,6 +15,7 @@ public class FaceRequest {
     private String userId;
     private String type;
     private final String appName = "faceengine";
+    private String filename;
 
     private synchronized int getNextSequenceNumber() {
         return ++sequenceNumber; // Increment the sequence number
@@ -63,6 +64,14 @@ public class FaceRequest {
                 && this.imageBase64 != null
                 && this.userId != null
                 && this.type != null;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
     @Override
