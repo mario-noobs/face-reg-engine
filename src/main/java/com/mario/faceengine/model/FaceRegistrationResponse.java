@@ -5,6 +5,7 @@ import org.json.JSONObject;
 public class FaceRegistrationResponse extends BasicResponse {
 
     private String userId;
+    private String requestId;
     private String type;
     private String createDate;
 
@@ -32,10 +33,18 @@ public class FaceRegistrationResponse extends BasicResponse {
         this.createDate = createDate;
     }
 
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
+    public String getRequestId() {
+        return requestId;
+    }
 
+    public void setRequestId(String requestId) {
+        this.requestId = requestId;
+    }
+
+    public JSONObject toJson() {
+        JSONObject json = super.toJson();
         json.put("userId", userId);
+        json.put("requestId", requestId);
         json.put("createDate", createDate);
         json.put("flow", type);
 

@@ -4,9 +4,7 @@ import com.mario.faceengine.exception.ErrorCodeMessage;
 import com.mario.faceengine.exception.FaceException;
 import com.mario.faceengine.handler.FaceHandler;
 import com.mario.faceengine.logging.LogUtils;
-import com.mario.faceengine.model.FaceRequest;
-import com.mario.faceengine.model.FaceResponse;
-import com.mario.faceengine.model.FaceSearchResponse;
+import com.mario.faceengine.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +19,11 @@ public class FaceController {
     private FaceHandler handler;
 
     @PostMapping("/register-identity")
-    public ResponseEntity<FaceResponse> register(@RequestBody FaceRequest request) {
+    public ResponseEntity<FaceRegistrationResponse> register(@RequestBody FaceRequest request) {
         String method = "register";
-        request.setType("REGISTER");
+        request.setType(Flow.REGISTER.getFlow());
         LogUtils.logRequest(method, request.toString());
-        FaceResponse response = new FaceResponse();
+        FaceRegistrationResponse response = new FaceRegistrationResponse();
         try {
             response = handler.registerIdentity(request);
         } catch (FaceException fe) {
@@ -44,7 +42,7 @@ public class FaceController {
     @PostMapping("/recognize-identity")
     public ResponseEntity<FaceSearchResponse> recognize(@RequestBody FaceRequest request) {
         String method = "recognize-identity";
-        request.setType("RECOGNIZE");
+        request.setType(Flow.RECOGNIZE.getFlow());
         LogUtils.logRequest(method, request.toString());
         FaceSearchResponse response = new FaceSearchResponse();
         try {

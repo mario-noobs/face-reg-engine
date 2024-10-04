@@ -29,8 +29,8 @@ public class FaceHandler {
     @Autowired
     FaceAuditRepository faceAuditRepository;
 
-    public FaceResponse registerIdentity(FaceRequest request) throws FaceException {
-        FaceResponse response = new FaceResponse();
+    public FaceRegistrationResponse registerIdentity(FaceRequest request) throws FaceException {
+        FaceRegistrationResponse response = new FaceRegistrationResponse();
 
         if (!request.isValidReq()) {
             throw new FaceException(ErrorCodeMessage.INVALID_INPUT);
@@ -51,15 +51,23 @@ public class FaceHandler {
 
         try {
             faceImageRepository.save(faceImage);
-            FaceRegistrationResponse faceRegistrationResponse = this.faceService.registerFace(faceRegistrationRequest);
+            response = this.faceService.registerFace(faceRegistrationRequest);
 
-            if (!faceRegistrationResponse.getCode().equals(ErrorCodeMessage.SUCCESS.getCode())) {
-                response.setCode(faceRegistrationResponse.getCode());
-                response.setMessage(faceRegistrationResponse.getMessage());
-            } else {
-                response.setCode(ErrorCodeMessage.SUCCESS.getCode());
-                response.setMessage(ErrorCodeMessage.SUCCESS.getMessage());
-            }
+            response.setRequestId(request.getRequestId());
+            response.setUserId(request.getUserId());
+            response.setType(request.getType());
+            response.setCreateDate(String.valueOf(System.currentTimeMillis()));
+
+            S3Client s3Client = new S3Client();
+            AppConfig appConfig = AppConfig.getInstance();
+            s3Client.upload(filename, faceRegistrationRequest.getImageBase64(), appConfig);
+
+            FaceAudit faceAudit = mapToFaceAudit(response);
+            faceAuditRepository.save(faceAudit);
+
+            response.setCode(ErrorCodeMessage.SUCCESS.getCode());
+            response.setMessage(ErrorCodeMessage.SUCCESS.getMessage());
+
         } catch (Exception e) {
             e.printStackTrace();
             response.setCode(ErrorCodeMessage.UNKNOWN_ERROR.getCode());
@@ -133,9 +141,23 @@ public class FaceHandler {
         faceAudit.setCode(response.getCode());
         faceAudit.setMessage(response.getMessage());
 
-        if (Objects.equals(response.getFlow(), "RECOGNIZE") && response.getSearchData() != null) {
+        if (Objects.equals(response.getFlow(), Flow.RECOGNIZE.getFlow()) && response.getSearchData() != null) {
             faceAudit.setFaceSearch(response.getSearchData().toString());
         }
+
+        return faceAudit;
+    }
+
+    private FaceAudit mapToFaceAudit(FaceRegistrationResponse response) {
+
+        FaceAudit faceAudit = new FaceAudit();
+        faceAudit.setFlow(response.getType());
+        faceAudit.setUserId(response.getUserId());
+        faceAudit.setRequestId(response.getRequestId());
+        faceAudit.setCreateDate(String.valueOf(System.currentTimeMillis()));
+        faceAudit.setUpdateDate(String.valueOf(System.currentTimeMillis()));
+        faceAudit.setCode(response.getCode());
+        faceAudit.setMessage(response.getMessage());
 
         return faceAudit;
     }
