@@ -17,6 +17,9 @@ public class FaceAudit {
     @Column(name = "PROBABILITY")
     private String prob;
 
+    @Column(name = "FACE_SEARCH")
+    private String faceSearch;
+
     @Column(name = "CREATE_DATE")
     private String createDate;
 
@@ -106,5 +109,13 @@ public class FaceAudit {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getFaceSearch() {
+        return faceSearch;
+    }
+
+    public void setFaceSearch(String faceSearch) {
+        this.faceSearch = faceSearch;
     }
 }

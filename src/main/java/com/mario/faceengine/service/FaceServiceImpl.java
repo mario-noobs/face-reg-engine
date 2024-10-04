@@ -40,7 +40,9 @@ public class FaceServiceImpl implements FaceService {
     public FaceSearchResponse recognize(FaceSearchRequest request) {
         LogUtils.logRequest("recognize", request.getUserId());
         FaceSearchResponse response = new FaceSearchResponse();
-
+        response.setFlow(request.getType());
+        response.setUserId(request.getUserId());
+        response.setRequestId(request.getRequestId());
         try {
             AppConfig appConfig = AppConfig.getInstance();
             JSONObject params = request.toJson();

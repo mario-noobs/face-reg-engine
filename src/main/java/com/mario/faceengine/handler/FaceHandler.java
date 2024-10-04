@@ -1,17 +1,21 @@
 package com.mario.faceengine.handler;
 
 import com.mario.faceengine.config.AppConfig;
+import com.mario.faceengine.entity.FaceAudit;
 import com.mario.faceengine.entity.FaceImage;
 import com.mario.faceengine.exception.ErrorCodeMessage;
 import com.mario.faceengine.exception.FaceException;
 import com.mario.faceengine.minio.S3Client;
 import com.mario.faceengine.model.*;
+import com.mario.faceengine.repository.FaceAuditRepository;
 import com.mario.faceengine.repository.FaceImageRepository;
 import com.mario.faceengine.service.FaceService;
 import com.mario.faceengine.service.FaceServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 @Component
 public class FaceHandler {
@@ -21,6 +25,9 @@ public class FaceHandler {
 
     @Autowired
     FaceImageRepository faceImageRepository;
+
+    @Autowired
+    FaceAuditRepository faceAuditRepository;
 
     public FaceResponse registerIdentity(FaceRequest request) throws FaceException {
         FaceResponse response = new FaceResponse();
@@ -86,10 +93,13 @@ public class FaceHandler {
             faceImageRepository.save(faceImage);
 
             response = this.faceService.recognize(faceSearchRequest);
-            S3Client s3Client = new S3Client();
 
+            S3Client s3Client = new S3Client();
             AppConfig appConfig = AppConfig.getInstance();
             s3Client.upload(filename, faceSearchRequest.getImageBase64(), appConfig);
+
+            FaceAudit faceAudit = mapToFaceAudit(response);
+            faceAuditRepository.save(faceAudit);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -110,6 +120,24 @@ public class FaceHandler {
         faceImage.setUpdateDate(String.valueOf(System.currentTimeMillis()));
         faceImage.setFilename(request.getFilename());
         return faceImage;
+    }
+
+    private FaceAudit mapToFaceAudit(FaceSearchResponse response) {
+
+        FaceAudit faceAudit = new FaceAudit();
+        faceAudit.setFlow(response.getFlow());
+        faceAudit.setUserId(response.getUserId());
+        faceAudit.setRequestId(response.getRequestId());
+        faceAudit.setCreateDate(String.valueOf(System.currentTimeMillis()));
+        faceAudit.setUpdateDate(String.valueOf(System.currentTimeMillis()));
+        faceAudit.setCode(response.getCode());
+        faceAudit.setMessage(response.getMessage());
+
+        if (Objects.equals(response.getFlow(), "RECOGNIZE") && response.getSearchData() != null) {
+            faceAudit.setFaceSearch(response.getSearchData().toString());
+        }
+
+        return faceAudit;
     }
 
     private String createFileName(FaceRequest request) {
