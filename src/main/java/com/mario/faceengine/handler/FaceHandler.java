@@ -65,8 +65,8 @@ public class FaceHandler {
             FaceAudit faceAudit = mapToFaceAudit(response);
             faceAuditRepository.save(faceAudit);
 
-            response.setCode(ErrorCodeMessage.SUCCESS.getCode());
-            response.setMessage(ErrorCodeMessage.SUCCESS.getMessage());
+//            response.setCode(ErrorCodeMessage.SUCCESS.getCode());
+//            response.setMessage(ErrorCodeMessage.SUCCESS.getMessage());
 
         } catch (Exception e) {
             e.printStackTrace();
