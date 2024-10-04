@@ -9,7 +9,7 @@ public class FaceFeature {
 
     @Id
     @Column(name = "ID")
-    @GeneratedValue()
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "USER_ID")

@@ -15,6 +15,7 @@ public class FaceRequest {
     private String userId;
     private String type;
     private final String appName = "faceengine";
+    private String filename;
 
     private synchronized int getNextSequenceNumber() {
         return ++sequenceNumber; // Increment the sequence number
@@ -23,7 +24,7 @@ public class FaceRequest {
     private String generateRequestId() {
         int number = getNextSequenceNumber();
         String timestamp = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-        return String.format("%s_%s_%d_%s", "Request", appName, number, timestamp);
+        return String.format("%s_%ss%d_%s", "transaction", appName, number, timestamp);
     }
 
     public String getRequestId() {
@@ -63,6 +64,14 @@ public class FaceRequest {
                 && this.imageBase64 != null
                 && this.userId != null
                 && this.type != null;
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
     @Override

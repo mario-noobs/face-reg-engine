@@ -8,6 +8,7 @@ public class FaceSearchResponse extends BasicResponse {
     private Map<String, Object> searchData;
     private String requestId;
     private String userId;
+    private String flow;
 
     public Map<String, Object> getSearchData() {
         return searchData;
@@ -33,6 +34,14 @@ public class FaceSearchResponse extends BasicResponse {
         this.userId = userId;
     }
 
+    public String getFlow() {
+        return flow;
+    }
+
+    public void setFlow(String flow) {
+        this.flow = flow;
+    }
+
     public JSONObject toJson() {
 
         JSONObject json = super.toJson();;
@@ -40,6 +49,7 @@ public class FaceSearchResponse extends BasicResponse {
         json.put("userId", userId);
         json.put("requestId", requestId);
         json.put("searchData", searchData);
+        json.put("flow", flow);
 
         return json;
     }
