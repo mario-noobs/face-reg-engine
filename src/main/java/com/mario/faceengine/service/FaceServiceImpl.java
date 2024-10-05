@@ -25,8 +25,8 @@ public class FaceServiceImpl implements FaceService {
 
             JSONObject jsonResponse = new JSONObject(dataResponse);
 
-            response.setCode(jsonResponse.getString("code"));
-            response.setMessage(jsonResponse.getString("message"));
+            response.setCode(ErrorCodeMessage.UNKNOWN_ERROR.getCode());
+            response.setMessage(ErrorCodeMessage.UNKNOWN_ERROR.getMessage());
 
         } catch (Exception e) {
             e.printStackTrace();
