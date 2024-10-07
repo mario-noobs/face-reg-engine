@@ -2,10 +2,11 @@ package com.mario.faceengine.model;
 
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class FaceSearchResponse extends BasicResponse {
-    private Map<String, Object> searchData;
+    private Map<String, Object> searchData = new HashMap<>();
     private String requestId;
     private String userId;
     private String flow;
