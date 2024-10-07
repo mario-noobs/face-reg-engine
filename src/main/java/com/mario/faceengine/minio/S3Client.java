@@ -36,17 +36,33 @@ public class S3Client {
     @Value("${minio.autocreate}")
     public boolean autoCreate;
 
-    public MinioClient getClient(AppConfig config) throws Exception {
+    public void setClient(MinioClient client) {
+        this.client = client;
+    }
+
+    public MinioClient getClient(AppConfig config) throws FaceException {
         if (this.client == null) {
             this.client = MinioClient.builder()
                             .endpoint(config.getS3Url(), config.getS3Port(), false)
                             .credentials(config.getS3Username(), config.getS3Password())
                             .build();
         }
-        boolean found = client.bucketExists(BucketExistsArgs.builder().bucket(config.getS3Bucket()).build());
+
+        boolean found;
+
+        try {
+            found = client.bucketExists(BucketExistsArgs.builder().bucket(config.getS3Bucket()).build());
+        } catch (Exception e) {
+            throw new FaceException(ErrorCodeMessage.S3_CLIENT_ERROR);
+        }
+
         if (!found) {
             if (autoCreate) {
-                client.makeBucket(MakeBucketArgs.builder().bucket(config.getS3Bucket()).build());
+                try {
+                    client.makeBucket(MakeBucketArgs.builder().bucket(config.getS3Bucket()).build());
+                } catch (Exception e) {
+                    throw new FaceException(ErrorCodeMessage.S3_CLIENT_ERROR);
+                }
                 log.info("Auto make bucket: {}", config.getS3Bucket());
             } else {
                 throw new FaceException(ErrorCodeMessage.S3_BUCKET_ERROR);
@@ -56,7 +72,7 @@ public class S3Client {
         return this.client;
     }
 
-    public void upload(String filePath, String imageBase64, AppConfig config) throws Exception {
+    public void upload(String filePath, String imageBase64, AppConfig config) throws FaceException {
         LogUtils.logRequest("upload", filePath);
         if (filePath == null || filePath.isEmpty()) {
             throw new FaceException(ErrorCodeMessage.FILENAME_NOT_FOUND);
@@ -64,20 +80,25 @@ public class S3Client {
 
         MinioClient minioClient = getClient(config);
 
-        // Decode the Base64 string
-//        String base64Data = imageBase64.split(",")[1]; // Split the prefix (data:image/jpeg;base64,)
-        byte[] imageBytes = Base64.getDecoder().decode(imageBase64);
+        try {
+            byte[] imageBytes = Base64.getDecoder().decode(imageBase64);
 
-        // Create an InputStream from the byte array
-        InputStream inputStream = new ByteArrayInputStream(imageBytes);
+            // Create an InputStream from the byte array
+            InputStream inputStream = new ByteArrayInputStream(imageBytes);
 
-        minioClient.putObject(
-                PutObjectArgs.builder().bucket(config.getS3Bucket()).object(filePath)
-                        .contentType("image/jpeg")
-                        .stream(
-                                inputStream, inputStream.available(), -1)
-                        .build());
-        log.info("File {},Upload Bucket {}", filePath, config.getS3Bucket());
+            minioClient.putObject(
+                    PutObjectArgs.builder().bucket(config.getS3Bucket()).object(filePath)
+                            .contentType("image/jpeg")
+                            .stream(
+                                    inputStream, inputStream.available(), -1)
+                            .build());
+            log.info("File {},Upload Bucket {}", filePath, config.getS3Bucket());
+        } catch (IllegalArgumentException e) {
+            throw new FaceException(ErrorCodeMessage.INVALID_BASE64);
+        } catch (Exception fe ) {
+            throw new FaceException(ErrorCodeMessage.S3_UPLOAD_ERROR);
+        }
+
         LogUtils.logResponse("upload", "");
     }
 
@@ -164,4 +185,12 @@ public class S3Client {
 //            }
 //        }
 //    }
+
+    public boolean isAutoCreate() {
+        return autoCreate;
+    }
+
+    public void setAutoCreate(boolean autoCreate) {
+        this.autoCreate = autoCreate;
+    }
 }

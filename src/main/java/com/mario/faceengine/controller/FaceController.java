@@ -27,8 +27,8 @@ public class FaceController {
         try {
             response = handler.registerIdentity(request);
         } catch (FaceException fe) {
-            response.setCode(fe.getErrorCode().getCode());
-            response.setMessage(fe.getErrorCode().getMessage());
+            response.setCode(fe.getErrorCode());
+            response.setMessage(fe.getErrorMessage());
         } catch (Exception e) {
 //            e.printStackTrace();
             LogUtils.logError(method, e.toString());
@@ -48,8 +48,8 @@ public class FaceController {
         try {
             response = handler.recognizeIdentity(request);
         } catch (FaceException fe) {
-            response.setCode(fe.getErrorCode().getCode());
-            response.setMessage(fe.getErrorCode().getMessage());
+            response.setCode(fe.getErrorCode());
+            response.setMessage(fe.getErrorMessage());
         } catch (Exception e) {
             LogUtils.logError(method, e.toString());
             response.setCode(ErrorCodeMessage.UNKNOWN_ERROR.getCode());
