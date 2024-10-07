@@ -68,7 +68,11 @@ public class FaceHandler {
 //            response.setCode(ErrorCodeMessage.SUCCESS.getCode());
 //            response.setMessage(ErrorCodeMessage.SUCCESS.getMessage());
 
-        } catch (Exception e) {
+        } catch (FaceException e) {
+            response.setCode(e.getErrorCode());
+            response.setMessage(e.getErrorMessage());
+        }
+        catch (Exception e) {
             e.printStackTrace();
             response.setCode(ErrorCodeMessage.UNKNOWN_ERROR.getCode());
             response.setMessage(ErrorCodeMessage.UNKNOWN_ERROR.getMessage());
@@ -109,6 +113,9 @@ public class FaceHandler {
             FaceAudit faceAudit = mapToFaceAudit(response);
             faceAuditRepository.save(faceAudit);
 
+        } catch (FaceException e) {
+            response.setCode(e.getErrorCode());
+            response.setMessage(e.getErrorMessage());
         } catch (Exception e) {
             e.printStackTrace();
             response.setCode(ErrorCodeMessage.UNKNOWN_ERROR.getCode());

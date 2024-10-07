@@ -16,6 +16,8 @@ public class AppConfig {
     private final String s3Password;
 
     private final String s3Bucket;
+
+    private final boolean s3AutoCreate;
     
     // Private constructor to prevent instantiation
     private AppConfig() {
@@ -28,6 +30,7 @@ public class AppConfig {
         this.s3Username = getEnvVar("S3_USERNAME", "admin");
         this.s3Password = getEnvVar("S3_PASSWORD", "123456789$");
         this.s3Bucket = getEnvVar("S3_BUCKET", "face-bucket");
+        this.s3AutoCreate = Boolean.parseBoolean(getEnvVar("S3_AUTO_BUCKET", "false"));
     }
 
     public static AppConfig getInstance() {
@@ -77,5 +80,9 @@ public class AppConfig {
 
     public String getS3Bucket() {
         return s3Bucket;
+    }
+
+    public boolean getS3AutoCreate() {
+        return s3AutoCreate;
     }
 }

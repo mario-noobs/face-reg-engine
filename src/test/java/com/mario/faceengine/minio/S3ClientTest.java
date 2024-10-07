@@ -68,11 +68,11 @@ public class S3ClientTest {
         when(config.getS3Username()).thenReturn("user");
         when(config.getS3Password()).thenReturn("password");
         when(config.getS3Bucket()).thenReturn("my-bucket");
+        when(config.getS3AutoCreate()).thenReturn(true);
 
         when(minioClient.bucketExists(any(BucketExistsArgs.class))).thenReturn(false);
 
         // Assuming autoCreate is a field in your service class
-        s3Client.setAutoCreate(true);
 
         MinioClient client = s3Client.getClient(config);
 
@@ -91,7 +91,6 @@ public class S3ClientTest {
         when(minioClient.bucketExists(any(BucketExistsArgs.class))).thenReturn(false);
 
         // Set autoCreate to false
-        s3Client.setAutoCreate(false);
 
         Exception exception = assertThrows(FaceException.class, () -> {
             s3Client.getClient(config);

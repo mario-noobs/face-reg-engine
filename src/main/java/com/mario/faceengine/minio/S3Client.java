@@ -33,9 +33,6 @@ public class S3Client {
     @Resource
     private MinioConfig minioProp;
 
-    @Value("${minio.autocreate}")
-    public boolean autoCreate;
-
     public void setClient(MinioClient client) {
         this.client = client;
     }
@@ -57,7 +54,7 @@ public class S3Client {
         }
 
         if (!found) {
-            if (autoCreate) {
+            if (config.getS3AutoCreate()) {
                 try {
                     client.makeBucket(MakeBucketArgs.builder().bucket(config.getS3Bucket()).build());
                 } catch (Exception e) {
@@ -186,11 +183,4 @@ public class S3Client {
 //        }
 //    }
 
-    public boolean isAutoCreate() {
-        return autoCreate;
-    }
-
-    public void setAutoCreate(boolean autoCreate) {
-        this.autoCreate = autoCreate;
-    }
 }
