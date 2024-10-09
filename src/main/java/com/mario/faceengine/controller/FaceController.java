@@ -8,6 +8,8 @@ import com.mario.faceengine.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,10 +22,17 @@ public class FaceController {
     @Autowired
     private FaceHandler handler;
 
+    public String getUserInfo() {
+        // Get the authentication object
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null ? authentication.getName() : null;
+    }
+
     @PostMapping("/register-identity")
     public ResponseEntity<FaceRegistrationResponse> register(@RequestBody FaceRequest request) {
         String method = "register";
         request.setType(Flow.REGISTER.getFlow());
+        request.setUserId(getUserInfo());
         LogUtils.logRequest(method, request.toString());
         FaceRegistrationResponse response = new FaceRegistrationResponse();
         try {
@@ -44,6 +53,7 @@ public class FaceController {
     @PostMapping("/recognize-identity")
     public ResponseEntity<FaceSearchResponse> recognize(@RequestBody FaceRequest request) {
         String method = "recognize-identity";
+        request.setUserId(getUserInfo());
         request.setType(Flow.RECOGNIZE.getFlow());
         LogUtils.logRequest(method, request.toString());
         FaceSearchResponse response = new FaceSearchResponse();
