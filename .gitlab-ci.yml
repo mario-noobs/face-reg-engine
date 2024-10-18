@@ -15,12 +15,16 @@ stages:
   - package
   - deploy
 
+log-variables:
+  stage: test
+  script:
+    - echo $DB_URL
+    - echo $DB_USERNAME
+
 gradle-test:  # Test job for Gradle
   image: gradle:jdk17  # Using Gradle Docker image
   stage: test
   script:
-    - echo "DB_URL: $DB_URL"
-    - echo "DB_USERNAME: $DB_USERNAME"
     - ./gradlew clean test  # Run Gradle tests
   variables:
     SPRING_DATASOURCE_URL: ${DB_URL}
