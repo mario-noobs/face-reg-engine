@@ -17,6 +17,10 @@ gradle-test:  # Test job for Gradle
   stage: test
   script:
     - ./gradlew test  # Run Gradle tests
+  variables:
+    SPRING_DATASOURCE_URL: $DB_URL
+    SPRING_DATASOURCE_USERNAME: $DB_USERNAME
+    SPRING_DATASOURCE_PASSWORD: $DB_PASSWORD
   artifacts:
     paths:
       - build/test-results/test/  # Ensure this path matches your project structure
@@ -27,6 +31,10 @@ gradle-build:
   stage: build
   script:
     - ./gradlew build  # Run Gradle build
+  variables:
+    SPRING_DATASOURCE_URL: $DB_URL
+    SPRING_DATASOURCE_USERNAME: $DB_USERNAME
+    SPRING_DATASOURCE_PASSWORD: $DB_PASSWORD
   artifacts:
     paths:
       - build/libs/*.jar  # Ensure this path matches where your JAR files are located
