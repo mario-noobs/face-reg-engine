@@ -47,6 +47,7 @@ gradle-build:
 docker-build:
   stage: package
   script:
+    - unset DOCKER_HOST
     - docker info  # Check Docker connection
     - docker build -t $DOCKER_REPO/$DOCKER_IMAGE:latest .  # Tagging the latest version correctly
     - docker tag $DOCKER_REPO/$DOCKER_IMAGE:latest $DOCKER_REPO/$DOCKER_IMAGE:$DOCKER_IMAGE_VERSION  # Tag with version
