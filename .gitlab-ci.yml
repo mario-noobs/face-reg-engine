@@ -1,5 +1,12 @@
 image: docker:latest
+
+services:
+  - docker:dind  # Use Docker-in-Docker service
+
+
+
 variables:
+  DOCKER_HOST: tcp://docker:2375  # Set the Docker host
   DOCKER_DRIVER: overlay
   DOCKER_REPO: mario
   DOCKER_IMAGE: face-engine-backend
@@ -42,6 +49,7 @@ gradle-build:
 docker-build:
   stage: package
   script:
+    - docker info  # Check Docker connection
     - docker build -t $DOCKER_REPO/$DOCKER_IMAGE:latest .  # Tagging the latest version correctly
     - docker tag $DOCKER_REPO/$DOCKER_IMAGE:latest $DOCKER_REPO/$DOCKER_IMAGE:$DOCKER_IMAGE_VERSION  # Tag with version
     - echo $DOCKER_SECRET | docker login -u $DOCKER_USER --password-stdin  # Securely logging in to Docker
