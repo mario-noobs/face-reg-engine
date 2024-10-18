@@ -1,13 +1,11 @@
-image: docker:latest
+image: docker:18-git
 
 services:
-  - docker:dind  # Use Docker-in-Docker service
-
-
+  - docker:18-dind
 
 variables:
-  DOCKER_HOST: tcp://docker:2375  # Set the Docker host
-  DOCKER_DRIVER: overlay
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
   DOCKER_REPO: mario
   DOCKER_IMAGE: face-engine-backend
   DOCKER_IMAGE_VERSION: v0.5
