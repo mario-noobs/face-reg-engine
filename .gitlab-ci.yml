@@ -18,9 +18,9 @@ gradle-test:  # Test job for Gradle
   script:
     - ./gradlew test  # Run Gradle tests
   variables:
-    SPRING_DATASOURCE_URL: $DB_URL
-    SPRING_DATASOURCE_USERNAME: $DB_USERNAME
-    SPRING_DATASOURCE_PASSWORD: $DB_PASSWORD
+    SPRING_DATASOURCE_URL: jdbc:mariadb://198.7.120.11:3306/FACE_ENGINE
+    SPRING_DATASOURCE_USERNAME: face_user
+    SPRING_DATASOURCE_PASSWORD: face_pass
   artifacts:
     paths:
       - build/test-results/test/  # Ensure this path matches your project structure
@@ -32,9 +32,9 @@ gradle-build:
   script:
     - ./gradlew build  # Run Gradle build
   variables:
-    SPRING_DATASOURCE_URL: $DB_URL
-    SPRING_DATASOURCE_USERNAME: $DB_USERNAME
-    SPRING_DATASOURCE_PASSWORD: $DB_PASSWORD
+    SPRING_DATASOURCE_URL: jdbc:mariadb://198.7.120.11:3306/FACE_ENGINE
+    SPRING_DATASOURCE_USERNAME: face_user
+    SPRING_DATASOURCE_PASSWORD: face_pass
   artifacts:
     paths:
       - build/libs/*.jar  # Ensure this path matches where your JAR files are located
