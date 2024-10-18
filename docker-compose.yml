@@ -1,0 +1,14 @@
+version: '3'
+services:
+  backend:
+    image: mariobui/face-engine-backend:v0.5
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mariadb://198.7.120.11:3306/FACE_ENGINE
+      SPRING_DATASOURCE_USERNAME: face_user
+      SPRING_DATASOURCE_PASSWORD: face_pass
+    restart: on-failure

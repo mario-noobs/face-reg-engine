@@ -1,23 +1,56 @@
-build-job:
+image: docker:latest  # this sets default image for jobs
+
+services:
+  - docker:dind
+
+
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_DRIVER: overlay2
+  DOCKER_REPO: mariobui
+  DOCKER_IMAGE: face-engine-backend
+  DOCKER_IMAGE_VERSION: v0.5
+  SPRING_PROFILES_ACTIVE: gitlab-ci
+
+stages:
+  - test
+  - build
+  - package
+  - deploy
+
+gradle-test:  # Test job for Gradle
+  image: gradle:jdk17  # Using Gradle Docker image
+  stage: test
+  script:
+    - ./gradlew clean test  # Run Gradle tests
+  variables:
+    SPRING_DATASOURCE_URL: $DB_URL
+    SPRING_DATASOURCE_USERNAME: $DB_USERNAME
+    SPRING_DATASOURCE_PASSWORD: $DB_PASSWORD
+  artifacts:
+    paths:
+      - build/test-results/test/  # Ensure this path matches your project structure
+      - build/reports/tests/       # Ensure this path matches your project structure
+
+gradle-build:
+  image: gradle:jdk17  # Using Gradle Docker image
   stage: build
   script:
-    - echo "Hello, $GITLAB_USER_LOGIN!"
+    - ./gradlew clean bootJar  # Run Gradle build
+  variables:
+    SPRING_DATASOURCE_URL: $DB_URL
+    SPRING_DATASOURCE_USERNAME: $DB_USERNAME
+    SPRING_DATASOURCE_PASSWORD: $DB_PASSWORD
+  artifacts:
+    paths:
+      - build/libs/*.jar  # Ensure this path matches where your JAR files are located
 
-test-job1:
-  stage: test
+docker-build:
+  stage: package
   script:
-    - echo "This job tests something Mario2"
-
-test-job2:
-  stage: test
-  script:
-    - echo "This job tests something, but takes more time than test-job1."
-    - echo "After the echo commands complete, it runs the sleep command for 20 seconds"
-    - echo "which simulates a test that runs 20 seconds longer than test-job1"
-    - sleep 20
-
-deploy-prod:
-  stage: deploy
-  script:
-    - echo "This job deploys something from the $CI_COMMIT_BRANCH branch."
-  environment: production
+    - unset DOCKER_HOST
+    - docker info  # Check Docker connection
+    - docker build -t $DOCKER_REPO/$DOCKER_IMAGE:latest .  # Tagging the latest version correctly
+    - docker tag $DOCKER_REPO/$DOCKER_IMAGE:latest $DOCKER_REPO/$DOCKER_IMAGE:$DOCKER_IMAGE_VERSION  # Tag with version
+    - echo $DOCKER_SECRET | docker login -u $DOCKER_USER --password-stdin  # Securely logging in to Docker
+    - docker push $DOCKER_REPO/$DOCKER_IMAGE:$DOCKER_IMAGE_VERSION  # Push the image with version
