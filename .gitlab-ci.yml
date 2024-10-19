@@ -56,7 +56,7 @@ stages:
 #    - docker push $DOCKER_REPO/$DOCKER_IMAGE:$DOCKER_IMAGE_VERSION  # Push the image with version
 
 docker-compose-deploy:
-  state: deploy
+  stage: deploy
   script:
     - ssh -o StrictHostKeyChecking=no -i $SSH_KEY $USER_SSH@$IP_SSH
     - docker compose up -d
