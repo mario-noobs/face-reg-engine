@@ -59,7 +59,7 @@ stages:
 docker-compose-deploy:
   stage: deploy
   before_script:
-    - chmod 640 $SSH_KEY
+    - chmod 600 $SSH_KEY
   script:
     - >
       ssh -o StrictHostKeyChecking=no -i $SSH_KEY gitlab@198.7.120.11
@@ -67,6 +67,6 @@ docker-compose-deploy:
       echo "@1Vietnam" | sudo -S su
       sudo su
       cd ${PATH_TO_PROJECT};
-      docker-compose down;
-      docker compose up -d;
-      docker image prune -f;"
+      sudo docker compose down;
+      sudo docker compose up -d;
+      sudo docker image prune -f;"
