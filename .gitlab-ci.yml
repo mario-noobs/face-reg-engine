@@ -11,6 +11,7 @@ variables:
   DOCKER_IMAGE: face-engine-backend
   DOCKER_IMAGE_VERSION: v0.5
   SPRING_PROFILES_ACTIVE: gitlab-ci
+  PATH_TO_PROJECT: /root/face-reg-engine/docker-compose.yml
 
 stages:
   - test
@@ -54,3 +55,17 @@ docker-build:
     - docker tag $DOCKER_REPO/$DOCKER_IMAGE:latest $DOCKER_REPO/$DOCKER_IMAGE:$DOCKER_IMAGE_VERSION  # Tag with version
     - echo $DOCKER_SECRET | docker login -u $DOCKER_USER --password-stdin  # Securely logging in to Docker
     - docker push $DOCKER_REPO/$DOCKER_IMAGE:$DOCKER_IMAGE_VERSION  # Push the image with version
+
+docker-compose-deploy:
+  stage: deploy
+  before_script:
+    - chmod 600 $SSH_KEY
+  script:
+    - >
+      ssh -o StrictHostKeyChecking=no -i $SSH_KEY gitlab@198.7.120.11
+      "
+      echo $SUDO_PASSWORD | sudo -S su 
+      sudo su
+      sudo docker compose -f $PATH_TO_PROJECT down;
+      sudo docker compose -f $PATH_TO_PROJECT up -d;
+      sudo docker image prune -f;"
