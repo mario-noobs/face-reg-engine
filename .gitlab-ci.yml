@@ -11,7 +11,7 @@ variables:
   DOCKER_IMAGE: face-engine-backend
   DOCKER_IMAGE_VERSION: v0.5
   SPRING_PROFILES_ACTIVE: gitlab-ci
-  PATH_TO_PROJECT: /root/face-reg-engine
+  PATH_TO_PROJECT: /root/face-reg-engine/docker-compose.yml
 
 stages:
   - test
@@ -64,9 +64,8 @@ docker-compose-deploy:
     - >
       ssh -o StrictHostKeyChecking=no -i $SSH_KEY gitlab@198.7.120.11
       "
-      echo "@1Vietnam" | sudo -S su
+      echo "@1Vietnam" | sudo -S su 
       sudo su
-      cd ${PATH_TO_PROJECT};
-      sudo docker compose down;
-      sudo docker compose up -d;
+      sudo docker compose -f $PATH_TO_PROJECT down;
+      sudo docker compose -f $PATH_TO_PROJECT up -d;
       sudo docker image prune -f;"
