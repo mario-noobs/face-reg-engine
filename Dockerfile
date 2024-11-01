@@ -6,4 +6,4 @@ WORKDIR /app
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "face-engine-0.5-release.jar"]
+ENTRYPOINT ["java", "-jar", "face-engine-release-v0.5.jar"]
