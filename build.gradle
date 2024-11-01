@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'com.mario'
-version = '0.5-release'
+version = 'release'
 
 java {
 	toolchain {
