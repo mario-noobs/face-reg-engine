@@ -3,7 +3,7 @@ package com.mario.faceengine.model;
 import com.mario.faceengine.helpers.Utils;
 import org.json.JSONObject;
 
-public class FaceRegistrationRequest {
+public class FaceSearchRequest {
 
     private String userId;
     private String imageBase64;
@@ -60,6 +60,11 @@ public class FaceRegistrationRequest {
         this.type = type;
     }
 
+    @Override
+    public String toString() {
+        return toJson().toString();
+    }
+
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
 
@@ -71,10 +76,5 @@ public class FaceRegistrationRequest {
         json.put("flow", type);
 
         return json;
-    }
-
-    @Override
-    public String toString() {
-        return toJson().toString();
     }
 }

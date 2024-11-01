@@ -1,5 +1,7 @@
 package com.mario.faceengine.model;
 
+import org.json.JSONObject;
+
 public class BasicResponse {
     private String code;
     private String message;
@@ -18,5 +20,14 @@ public class BasicResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+
+        json.put("code", code);
+        json.put("message", message);
+
+        return json;
     }
 }
