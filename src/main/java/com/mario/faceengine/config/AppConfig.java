@@ -22,10 +22,10 @@ public class AppConfig {
     // Private constructor to prevent instantiation
     private AppConfig() {
         this.someTimeout = Integer.parseInt(getEnvVar("APP_TIMEOUT", "30"));
-        this.faceHostNameUrl = getEnvVar("FACE_HOST_NAME", "http://75.119.149.223:5000");
+        this.faceHostNameUrl = getEnvVar("FACE_HOST_NAME", "http://face-regconition-service:5000");
         this.registerPath = getEnvVar("REGISTER_PATH", "/face/create-identity");
         this.recognizePath = getEnvVar("RECOGNIZE_PATH", "/face/recognize");
-        this.s3Url = getEnvVar("S3_URL", "http://198.7.120.11");
+        this.s3Url = getEnvVar("S3_URL", "http://minio");
         this.s3Port = getEnvVar("S3_PORT", "9000");
         this.s3Username = getEnvVar("S3_USERNAME", "admin");
         this.s3Password = getEnvVar("S3_PASSWORD", "123456789$");
