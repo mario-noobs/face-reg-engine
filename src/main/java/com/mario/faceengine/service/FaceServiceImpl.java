@@ -39,7 +39,7 @@ public class FaceServiceImpl implements FaceService {
                 if (data.has("request_id")) {
                     response.setRequestId(data.getString("request_id"));
                 }
-                if (data.has("encoding_shape")) {
+                if (data.has("encoding_shape") && !data.isNull("encoding_shape")) {
                     // Convert JSONArray to int[]
                     org.json.JSONArray arr = data.getJSONArray("encoding_shape");
                     int[] shape = new int[arr.length()];
@@ -48,7 +48,7 @@ public class FaceServiceImpl implements FaceService {
                     }
                     response.setEncodingShape(shape);
                 }
-                if (data.has("face_encoding_base64")) {
+                if (data.has("face_encoding_base64") && !data.isNull("face_encoding_base64")) {
                     response.setFaceEncodingBase64(data.getString("face_encoding_base64"));
                 }
             }
