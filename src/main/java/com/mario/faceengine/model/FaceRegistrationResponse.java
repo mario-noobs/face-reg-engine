@@ -2,12 +2,18 @@ package com.mario.faceengine.model;
 
 import org.json.JSONObject;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class FaceRegistrationResponse extends BasicResponse {
 
     private String userId;
     private String requestId;
     private String type;
     private String createDate;
+    @JsonIgnore
+    private int[] encodingShape;
+    @JsonIgnore
+    private String faceEncodingBase64;
 
     public String getUserId() {
         return userId;
@@ -41,13 +47,34 @@ public class FaceRegistrationResponse extends BasicResponse {
         this.requestId = requestId;
     }
 
+    public int[] getEncodingShape() {
+        return encodingShape;
+    }
+
+    public void setEncodingShape(int[] encodingShape) {
+        this.encodingShape = encodingShape;
+    }
+
+    public String getFaceEncodingBase64() {
+        return faceEncodingBase64;
+    }
+
+    public void setFaceEncodingBase64(String faceEncodingBase64) {
+        this.faceEncodingBase64 = faceEncodingBase64;
+    }
+
     public JSONObject toJson() {
         JSONObject json = super.toJson();
         json.put("userId", userId);
         json.put("requestId", requestId);
         json.put("createDate", createDate);
         json.put("flow", type);
-
+        if (encodingShape != null) {
+            json.put("encodingShape", encodingShape);
+        }
+        if (faceEncodingBase64 != null) {
+            json.put("faceEncodingBase64", faceEncodingBase64);
+        }
         return json;
     }
 

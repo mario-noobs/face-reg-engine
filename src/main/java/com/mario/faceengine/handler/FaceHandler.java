@@ -3,11 +3,13 @@ package com.mario.faceengine.handler;
 import com.mario.faceengine.config.AppConfig;
 import com.mario.faceengine.entity.FaceAudit;
 import com.mario.faceengine.entity.FaceImage;
+import com.mario.faceengine.entity.FaceFeature;
 import com.mario.faceengine.exception.ErrorCodeMessage;
 import com.mario.faceengine.exception.FaceException;
 import com.mario.faceengine.minio.S3Client;
 import com.mario.faceengine.model.*;
 import com.mario.faceengine.repository.FaceAuditRepository;
+import com.mario.faceengine.repository.FaceFeatureRepository;
 import com.mario.faceengine.repository.FaceImageRepository;
 import com.mario.faceengine.service.FaceService;
 import com.mario.faceengine.service.FaceServiceImpl;
@@ -28,6 +30,9 @@ public class FaceHandler {
 
     @Autowired
     FaceAuditRepository faceAuditRepository;
+
+    @Autowired
+    FaceFeatureRepository faceFeatureRepository;
 
     public FaceRegistrationResponse registerIdentity(FaceRequest request) throws FaceException {
         FaceRegistrationResponse response = new FaceRegistrationResponse();
@@ -57,6 +62,24 @@ public class FaceHandler {
             response.setUserId(request.getUserId());
             response.setType(request.getType());
             response.setCreateDate(String.valueOf(System.currentTimeMillis()));
+
+            // Save or update FaceFeature entity here
+            if (response.getFaceEncodingBase64() != null) {
+                FaceFeature feature = faceFeatureRepository.findTopByUserIdOrderByCreateDateDesc(response.getUserId());
+                if (feature == null) {
+                    feature = new FaceFeature();
+                    feature.setUserId(response.getUserId());
+                    feature.setCreateDate(response.getCreateDate());
+                } else {
+                    feature.setUpdateDate(String.valueOf(System.currentTimeMillis()));
+                }
+                feature.setFeature(response.getFaceEncodingBase64());
+                feature.setFlow(response.getType());
+                feature.setActivate(1); // default to active
+                faceFeatureRepository.save(feature);
+            }
+
+            response.setFaceEncodingBase64(null);
 
             S3Client s3Client = new S3Client();
             AppConfig appConfig = AppConfig.getInstance();
@@ -123,6 +146,43 @@ public class FaceHandler {
         }
 
         return response;
+    }
+
+    public DeleteIdentityResponse deleteIdentity(FaceRequest request) {
+
+        DeleteIdentityRequest deleteIdentityRequest = new DeleteIdentityRequest();
+        deleteIdentityRequest.setRequestId(request.getRequestId());
+        deleteIdentityRequest.setUserId(request.getUserId());
+        deleteIdentityRequest.setAlgorithm("mobilenet");
+
+        DeleteIdentityResponse response = faceService.deleteFace(deleteIdentityRequest);
+        try {
+            // Find latest FaceFeature for userId
+            FaceFeature feature = faceFeatureRepository.findTopByUserIdOrderByCreateDateDesc(request.getUserId());
+            if (feature != null && "success".equalsIgnoreCase(response.getStatus())) {
+                feature.setActivate(0);
+                faceFeatureRepository.save(feature);
+            }
+            // Save FaceAudit with flow DELETE
+            FaceAudit faceAudit = new FaceAudit();
+            faceAudit.setFlow(request.getType());
+            faceAudit.setUserId(request.getUserId());
+            faceAudit.setRequestId(request.getRequestId());
+            faceAudit.setCreateDate(String.valueOf(System.currentTimeMillis()));
+            faceAudit.setUpdateDate(String.valueOf(System.currentTimeMillis()));
+            faceAudit.setCode(response.getCode());
+            faceAudit.setMessage(response.getMessage());
+            faceAuditRepository.save(faceAudit);
+        } catch (Exception e) {
+            response.setCode(ErrorCodeMessage.UNKNOWN_ERROR.getCode());
+            response.setMessage("Delete identity failed: " + e.getMessage());
+            response.setStatus("error");
+        }
+        return response;
+    }
+
+    public boolean isUserRegistered(String userId) {
+        return faceFeatureRepository.existsByUserIdAndActivate(userId, 1);
     }
 
     private FaceImage mapToFaceImageDto(FaceRequest request) {

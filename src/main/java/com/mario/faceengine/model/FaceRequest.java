@@ -31,6 +31,7 @@ public class FaceRequest {
         return requestId;
     }
 
+
     public void setRequestId(String requestId) {
         this.requestId = requestId;
     }
@@ -84,7 +85,9 @@ public class FaceRequest {
 
         json.put("userId", userId);
         json.put("requestId", requestId);
-        json.put("imageBase64", Utils.hashSHA1(imageBase64));
+        if (imageBase64 != null) {
+          json.put("imageBase64", Utils.hashSHA1(imageBase64));
+        }
         json.put("requestId", requestId);
         json.put("flow", type);
 

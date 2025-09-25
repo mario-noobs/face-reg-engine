@@ -15,7 +15,7 @@ public class FaceFeature {
     @Column(name = "USER_ID")
     private String userId;
 
-    @Column(name = "FEATURE")
+    @Column(name = "FEATURE", columnDefinition = "LONGTEXT")
     private String feature;
 
     @Column(name = "CREATE_DATE")

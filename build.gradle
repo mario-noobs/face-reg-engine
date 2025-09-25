@@ -31,7 +31,7 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa:3.2.5'
 	implementation 'org.mariadb.jdbc:mariadb-java-client:3.1.4' // Check for the latest version
-
+	implementation 'mysql:mysql-connector-java:8.0.32'
 	// https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp
 	implementation 'com.squareup.okhttp3:okhttp:4.10.0'
 	// https://mvnrepository.com/artifact/com.squareup.okhttp/logging-interceptor

@@ -48,4 +48,19 @@ public class HttpClient {
         }
     }
 
+    public static String delete(String url, String jsonBody) throws IOException {
+        OkHttpClient client = createHttpClient(10, 30, 15);
+        RequestBody body = RequestBody.create(jsonBody, JSON);
+        Request request = new Request.Builder()
+                .url(url)
+                .delete(body)
+                .build();
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                throw new IOException("Unexpected code " + response);
+            }
+            return response.body().string();
+        }
+    }
+
 }
