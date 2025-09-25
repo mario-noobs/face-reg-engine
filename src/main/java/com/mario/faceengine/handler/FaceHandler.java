@@ -63,12 +63,17 @@ public class FaceHandler {
             response.setType(request.getType());
             response.setCreateDate(String.valueOf(System.currentTimeMillis()));
 
-            // Save FaceFeature entity here
+            // Save or update FaceFeature entity here
             if (response.getFaceEncodingBase64() != null) {
-                FaceFeature feature = new FaceFeature();
-                feature.setUserId(response.getUserId());
+                FaceFeature feature = faceFeatureRepository.findTopByUserIdOrderByCreateDateDesc(response.getUserId());
+                if (feature == null) {
+                    feature = new FaceFeature();
+                    feature.setUserId(response.getUserId());
+                    feature.setCreateDate(response.getCreateDate());
+                } else {
+                    feature.setUpdateDate(String.valueOf(System.currentTimeMillis()));
+                }
                 feature.setFeature(response.getFaceEncodingBase64());
-                feature.setCreateDate(response.getCreateDate());
                 feature.setFlow(response.getType());
                 feature.setActivate(1); // default to active
                 faceFeatureRepository.save(feature);
@@ -174,6 +179,10 @@ public class FaceHandler {
             response.setStatus("error");
         }
         return response;
+    }
+
+    public boolean isUserRegistered(String userId) {
+        return faceFeatureRepository.existsByUserIdAndActivate(userId, 1);
     }
 
     private FaceImage mapToFaceImageDto(FaceRequest request) {

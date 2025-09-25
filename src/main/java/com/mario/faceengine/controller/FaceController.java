@@ -78,4 +78,11 @@ public class FaceController {
         LogUtils.logResponse(method, response.toString());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @GetMapping("/is-registered")
+    public ResponseEntity<RegisteredResponse> isRegistered(@RequestParam String userId) {
+        boolean registered = handler.isUserRegistered(userId);
+        RegisteredResponse response = new RegisteredResponse(registered);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 }

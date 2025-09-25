@@ -8,4 +8,7 @@ import org.springframework.stereotype.Repository;
 public interface FaceFeatureRepository extends JpaRepository<FaceFeature, Integer> {
     // Additional query methods if needed
     FaceFeature findTopByUserIdOrderByCreateDateDesc(String userId);
+
+    // Check if a FaceFeature exists for userId with activate = 1
+    boolean existsByUserIdAndActivate(String userId, int activate);
 }
