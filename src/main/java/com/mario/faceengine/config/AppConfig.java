@@ -27,6 +27,7 @@ public class AppConfig {
         this.registerPath = getEnvVar("REGISTER_PATH", "/face/create-identity");
         this.recognizePath = getEnvVar("RECOGNIZE_PATH", "/face/recognize");
         this.deletePath = getEnvVar("DELETE_PATH", "/face/delete-identity");
+        this.s3Url = getEnvVar("S3_URL", "http://minio");
         this.s3Port = getEnvVar("S3_PORT", "9000");
         this.s3Username = getEnvVar("S3_USERNAME", "admin");
         this.s3Password = getEnvVar("S3_PASSWORD", "123456789$");
