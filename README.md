@@ -1,92 +1,244 @@
-# face-reg-engine
+# Face Recognition Engine
 
+A Spring Boot-based microservice for face registration, recognition, and identity management using machine learning algorithms.
 
+## Overview
 
-## Getting started
+The Face Recognition Engine provides REST APIs for:
+- **Face Registration**: Register user faces with facial feature extraction
+- **Face Recognition**: Identify users by comparing facial features
+- **Identity Management**: Delete user identities and check registration status
+- **Audit Logging**: Track all face operations with comprehensive logging
+- **File Storage**: Store face images in MinIO object storage
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+## Technology Stack
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+- **Backend**: Spring Boot 3.3.4, Java 17
+- **Database**: MySQL/MariaDB with JPA/Hibernate
+- **Security**: JWT-based authentication
+- **Storage**: MinIO for image storage
+- **Build Tool**: Gradle
+- **Containerization**: Docker & Docker Compose
 
-## Add your files
+## Features
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+### Core APIs
+- `POST /face/v1/api/register-identity` - Register a new face identity
+- `POST /face/v1/api/recognize-identity` - Recognize/search for a face
+- `POST /face/v1/api/delete-identity` - Delete a user's face identity
+- `GET /face/v1/api/is-registered?userId=xxx` - Check if user is registered
 
+### Key Features
+- Automatic face feature extraction and encoding
+- Facial recognition with configurable algorithms (MobileNet)
+- Comprehensive audit logging for all operations
+- Secure JWT-based authentication
+- Image storage with MinIO integration
+- Database persistence with MySQL/MariaDB
+- RESTful API design with proper error handling
+
+## Prerequisites
+
+- **Java 17** or higher
+- **MySQL/MariaDB** database
+- **MinIO** object storage (optional, for image storage)
+- **Docker** and **Docker Compose** (for containerized deployment)
+
+## Local Development Setup
+
+### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd face-reg-engine
 ```
-cd existing_repo
-git remote add origin http://gitlab.omari.id.vn/java/face-reg-engine.git
-git branch -M main
-git push -uf origin main
+
+### 2. Database Setup
+Create a MySQL/MariaDB database:
+```sql
+CREATE DATABASE FACE_ENGINE;
+CREATE USER 'face_user'@'localhost' IDENTIFIED BY 'face_pass';
+GRANT ALL PRIVILEGES ON FACE_ENGINE.* TO 'face_user'@'localhost';
+FLUSH PRIVILEGES;
 ```
 
-## Integrate with your tools
+### 3. Application Configuration
+Update `src/main/resources/application.properties` for local development:
+```properties
+# Database Configuration
+spring.datasource.url=jdbc:mysql://localhost:3306/FACE_ENGINE?useSSL=false
+spring.datasource.username=face_user
+spring.datasource.password=face_pass
 
-- [ ] [Set up project integrations](http://gitlab.omari.id.vn/java/face-reg-engine/-/settings/integrations)
+# MinIO Configuration (optional)
+minio.url=http://localhost
+minio.port=9001
+minio.username=admin
+minio.password=123456789$
+minio.bucket=face-bucket
 
-## Collaborate with your team
+# JWT Security
+jwt.secret=your-jwt-secret-key-here
+```
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+### 4. Run with Gradle
+```bash
+# Make gradlew executable
+chmod +x gradlew
 
-## Test and Deploy
+# Run the application
+./gradlew bootRun
+```
 
-Use the built-in continuous integration in GitLab.
+The application will start on `http://localhost:8080`
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing(SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+### 5. Build WAR file
+```bash
+./gradlew bootWar
+```
 
-***
+## Docker Deployment
 
-# Editing this README
+### Using Docker Compose
+```bash
+# Start the application with dependencies
+docker-compose up -d
+```
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thank you to [makeareadme.com](https://www.makeareadme.com/) for this template.
+### Manual Docker Build
+```bash
+# Build the application
+./gradlew bootWar
 
-## Suggestions for a good README
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+# Build Docker image
+docker build -t face-engine:latest .
 
-## Name
-Choose a self-explaining name for your project.
+# Run container
+docker run -p 8080:8080 face-engine:latest
+```
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+## API Usage Examples
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
+### 1. Register a Face
+```bash
+curl -X POST http://localhost:8080/face/v1/api/register-identity \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <your-jwt-token>" \
+  -d '{
+    "requestId": "req-001",
+    "imageBase64": "data:image/jpeg;base64,/9j/4AAQSkZJRgABA..."
+  }'
+```
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+### 2. Recognize a Face
+```bash
+curl -X POST http://localhost:8080/face/v1/api/recognize-identity \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <your-jwt-token>" \
+  -d '{
+    "requestId": "req-002", 
+    "imageBase64": "data:image/jpeg;base64,/9j/4AAQSkZJRgABA..."
+  }'
+```
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+### 3. Check Registration Status
+```bash
+curl -X GET "http://localhost:8080/face/v1/api/is-registered?userId=user123" \
+  -H "Authorization: Bearer <your-jwt-token>"
+```
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+### 4. Delete Identity
+```bash
+curl -X POST http://localhost:8080/face/v1/api/delete-identity \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <your-jwt-token>" \
+  -d '{
+    "requestId": "req-003"
+  }'
+```
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+## Database Schema
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+The application uses the following main entities:
+- **FaceFeature**: Stores facial encodings and user mappings
+- **FaceImage**: Stores image metadata and file references
+- **FaceAudit**: Audit trail for all face operations
+
+## Configuration Options
+
+### Environment Variables
+- `SPRING_DATASOURCE_URL`: Database connection URL
+- `SPRING_DATASOURCE_USERNAME`: Database username
+- `SPRING_DATASOURCE_PASSWORD`: Database password
+- `JWT_SECRET`: JWT signing secret
+- `MINIO_URL`: MinIO server URL
+- `MINIO_USERNAME`: MinIO access key
+- `MINIO_PASSWORD`: MinIO secret key
+
+### Algorithm Configuration
+The service uses MobileNet algorithms for face detection and recognition. These can be configured in the service layer.
+
+## Development
+
+### Project Structure
+```
+src/main/java/com/mario/faceengine/
+├── config/          # Application configuration
+├── controller/      # REST API controllers
+├── entity/          # JPA entities
+├── exception/       # Custom exceptions
+├── handler/         # Business logic handlers
+├── model/          # Request/Response models
+├── repository/     # JPA repositories
+├── security/       # Security configuration
+└── service/        # External service integrations
+```
+
+### Running Tests
+```bash
+./gradlew test
+```
+
+### Code Quality
+The project includes:
+- Spring Boot DevTools for hot reloading
+- Comprehensive error handling
+- Request/Response logging
+- JWT-based security
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Database Connection Issues**
+   - Verify MySQL/MariaDB is running
+   - Check database credentials and URL
+   - Ensure database exists
+
+2. **MinIO Connection Issues**
+   - Verify MinIO server is accessible
+   - Check MinIO credentials
+   - Ensure bucket exists or auto-create is enabled
+
+3. **JWT Authentication**
+   - Verify JWT secret is configured
+   - Check token expiration
+   - Ensure proper Authorization header format
 
 ## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
 
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Submit a pull request
 
 ## License
-For open source projects, say how it is licensed.
 
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+[Add your license information here]
+
+## Support
+
+For issues and questions:
+- Create an issue in the repository
+- Contact the development team
+- Check the application logs for detailed error information
