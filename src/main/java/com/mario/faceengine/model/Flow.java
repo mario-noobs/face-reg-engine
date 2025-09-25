@@ -4,6 +4,7 @@ public enum Flow {
     REGISTER("REGISTER"),
     MATCHING("MATCHING"),
     RECOGNIZE("RECOGNIZE"),
+    DELETE("DELETE"),
     NONE("NONE");
 
     private final String flow;

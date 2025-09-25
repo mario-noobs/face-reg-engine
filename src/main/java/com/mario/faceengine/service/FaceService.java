@@ -6,4 +6,6 @@ import org.springframework.stereotype.Service;
 public interface FaceService {
     FaceRegistrationResponse registerFace(FaceRegistrationRequest request);
     FaceSearchResponse recognize(FaceSearchRequest request);
+    DeleteIdentityResponse deleteFace(DeleteIdentityRequest request);
+
 }
