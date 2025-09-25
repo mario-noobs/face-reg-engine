@@ -7,6 +7,7 @@ public class AppConfig {
     private final String faceHostNameUrl;
     private final String registerPath;
     private final String recognizePath;
+    private final String deletePath;
     private final String s3Url;
 
     private final String s3Port;
@@ -25,7 +26,7 @@ public class AppConfig {
         this.faceHostNameUrl = getEnvVar("FACE_HOST_NAME", "http://face-regconition-service:5000");
         this.registerPath = getEnvVar("REGISTER_PATH", "/face/create-identity");
         this.recognizePath = getEnvVar("RECOGNIZE_PATH", "/face/recognize");
-        this.s3Url = getEnvVar("S3_URL", "http://minio");
+        this.deletePath = getEnvVar("DELETE_PATH", "/face/delete-identity");
         this.s3Port = getEnvVar("S3_PORT", "9000");
         this.s3Username = getEnvVar("S3_USERNAME", "admin");
         this.s3Password = getEnvVar("S3_PASSWORD", "123456789$");
@@ -56,6 +57,10 @@ public class AppConfig {
 
     public String getRecognizePath() {
         return recognizePath;
+    }
+
+    public String getDeletePath() {
+        return deletePath;
     }
 
     public int getSomeTimeout() {
