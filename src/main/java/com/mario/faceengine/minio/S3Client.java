@@ -40,7 +40,7 @@ public class S3Client {
     public MinioClient getClient(AppConfig config) throws FaceException {
         if (this.client == null) {
             this.client = MinioClient.builder()
-                            .endpoint(config.getS3Url(), config.getS3Port(), false)
+                            .endpoint(config.getS3Endpoint(), 9000, false)
                             .credentials(config.getS3Username(), config.getS3Password())
                             .build();
         }

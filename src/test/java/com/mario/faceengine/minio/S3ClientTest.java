@@ -1,12 +1,9 @@
 package com.mario.faceengine.minio;
 
+import com.mario.faceengine.AbstractIntegrationTest;
 import com.mario.faceengine.config.AppConfig;
 import com.mario.faceengine.exception.ErrorCodeMessage;
 import com.mario.faceengine.exception.FaceException;
-import com.mario.faceengine.helpers.HttpClient;
-import com.mario.faceengine.model.FaceRegistrationRequest;
-import com.mario.faceengine.model.FaceRegistrationResponse;
-import com.mario.faceengine.model.Flow;
 import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
@@ -15,7 +12,6 @@ import io.minio.errors.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
-import org.springframework.boot.test.context.SpringBootTest;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -29,11 +25,11 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
-public class S3ClientTest {
-
+public class S3ClientTest extends AbstractIntegrationTest {
     private MinioClient minioClient;
+
     private AppConfig config;
+
     private S3Client s3Client;
 
     @BeforeEach
@@ -46,8 +42,7 @@ public class S3ClientTest {
 
     @Test
     public void testS3Client_getClientSuccessWithBucketExist() throws Exception {
-        when(config.getS3Url()).thenReturn("http://localhost");
-        when(config.getS3Port()).thenReturn(9000);
+        when(config.getS3Endpoint()).thenReturn("http://localhost");
         when(config.getS3Username()).thenReturn("user");
         when(config.getS3Password()).thenReturn("password");
         when(config.getS3Bucket()).thenReturn("my-bucket");
@@ -63,8 +58,7 @@ public class S3ClientTest {
 
     @Test
     public void testS3Client_getClientSuccessWithNoBucketExistWithAutoCreate() throws Exception {
-        when(config.getS3Url()).thenReturn("http://localhost");
-        when(config.getS3Port()).thenReturn(9000);
+        when(config.getS3Endpoint()).thenReturn("http://localhost");
         when(config.getS3Username()).thenReturn("user");
         when(config.getS3Password()).thenReturn("password");
         when(config.getS3Bucket()).thenReturn("my-bucket");
@@ -81,9 +75,8 @@ public class S3ClientTest {
     }
 
     @Test
-    public void testS3Client_getClientSuccessWithNoBucketExistWithNoAutoCreate() throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        when(config.getS3Url()).thenReturn("http://localhost");
-        when(config.getS3Port()).thenReturn(9000);
+    public void testS3Client_getClientSuccessWithNoBucketExistWithNoAutoCreate() throws Exception {
+        when(config.getS3Endpoint()).thenReturn("http://localhost");
         when(config.getS3Username()).thenReturn("user");
         when(config.getS3Password()).thenReturn("password");
         when(config.getS3Bucket()).thenReturn("my-bucket");
@@ -100,9 +93,8 @@ public class S3ClientTest {
     }
 
     @Test
-    public void testS3Client_getClientWrongCredentials() throws IOException, ServerException, InsufficientDataException, ErrorResponseException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
-        when(config.getS3Url()).thenReturn("http://localhost");
-        when(config.getS3Port()).thenReturn(9000);
+    public void testS3Client_getClientWrongCredentials() throws Exception {
+        when(config.getS3Endpoint()).thenReturn("http://localhost");
         when(config.getS3Username()).thenReturn("user");
         when(config.getS3Password()).thenReturn("password");
         when(config.getS3Bucket()).thenReturn("my-bucket");
@@ -118,8 +110,7 @@ public class S3ClientTest {
 
     @Test
     public void testS3Client_uploadSuccess() throws Exception {
-        when(config.getS3Url()).thenReturn("http://localhost");
-        when(config.getS3Port()).thenReturn(9000);
+        when(config.getS3Endpoint()).thenReturn("http://localhost");
         when(config.getS3Username()).thenReturn("user");
         when(config.getS3Password()).thenReturn("password");
         when(config.getS3Bucket()).thenReturn("my-bucket");
@@ -151,8 +142,7 @@ public class S3ClientTest {
 
     @Test
     public void testS3Client_uploadFailed() throws Exception {
-        when(config.getS3Url()).thenReturn("http://localhost");
-        when(config.getS3Port()).thenReturn(9000);
+        when(config.getS3Endpoint()).thenReturn("http://localhost");
         when(config.getS3Username()).thenReturn("user");
         when(config.getS3Password()).thenReturn("password");
         when(config.getS3Bucket()).thenReturn("my-bucket");
@@ -173,8 +163,7 @@ public class S3ClientTest {
     @Test
     public void testS3Client_uploadWrongType() throws Exception {
 
-        when(config.getS3Url()).thenReturn("http://localhost");
-        when(config.getS3Port()).thenReturn(9000);
+        when(config.getS3Endpoint()).thenReturn("http://localhost");
         when(config.getS3Username()).thenReturn("user");
         when(config.getS3Password()).thenReturn("password");
         when(config.getS3Bucket()).thenReturn("my-bucket");
@@ -193,8 +182,7 @@ public class S3ClientTest {
 
     @Test
     public void testS3Client_uploadFilePathNull() throws Exception {
-        when(config.getS3Url()).thenReturn("http://localhost");
-        when(config.getS3Port()).thenReturn(9000);
+        when(config.getS3Endpoint()).thenReturn("http://localhost");
         when(config.getS3Username()).thenReturn("user");
         when(config.getS3Password()).thenReturn("password");
         when(config.getS3Bucket()).thenReturn("my-bucket");

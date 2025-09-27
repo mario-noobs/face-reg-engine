@@ -34,6 +34,9 @@ public class FaceHandler {
     @Autowired
     FaceFeatureRepository faceFeatureRepository;
 
+    @Autowired
+    private AppConfig appConfig;
+
     public FaceRegistrationResponse registerIdentity(FaceRequest request) throws FaceException {
         FaceRegistrationResponse response = new FaceRegistrationResponse();
 
@@ -82,7 +85,6 @@ public class FaceHandler {
             response.setFaceEncodingBase64(null);
 
             S3Client s3Client = new S3Client();
-            AppConfig appConfig = AppConfig.getInstance();
             s3Client.upload(filename, faceRegistrationRequest.getImageBase64(), appConfig);
 
             FaceAudit faceAudit = mapToFaceAudit(response);
@@ -130,7 +132,6 @@ public class FaceHandler {
             response = this.faceService.recognize(faceSearchRequest);
 
             S3Client s3Client = new S3Client();
-            AppConfig appConfig = AppConfig.getInstance();
             s3Client.upload(filename, faceSearchRequest.getImageBase64(), appConfig);
 
             FaceAudit faceAudit = mapToFaceAudit(response);
