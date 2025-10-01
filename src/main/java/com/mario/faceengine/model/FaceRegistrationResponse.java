@@ -80,6 +80,13 @@ public class FaceRegistrationResponse extends BasicResponse {
 
     @Override
     public String toString() {
-        return toJson().toString();
+        JSONObject json = new JSONObject();
+        json.put("userId", userId);
+        json.put("requestId", requestId);
+        json.put("type", type);
+        json.put("createDate", createDate);
+        json.put("code", getCode());
+        json.put("message", getMessage());
+        return json.toString();
     }
 }

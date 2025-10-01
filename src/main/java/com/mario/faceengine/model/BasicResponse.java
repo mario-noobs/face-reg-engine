@@ -30,4 +30,9 @@ public class BasicResponse {
 
         return json;
     }
+
+    @Override
+    public String toString() {
+        return toJson().toString();
+    }
 }

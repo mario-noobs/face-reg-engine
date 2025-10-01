@@ -75,6 +75,13 @@ public class FaceRegistrationRequest {
 
     @Override
     public String toString() {
-        return toJson().toString();
+        JSONObject json = new JSONObject();
+        json.put("userId", userId);
+        json.put("algorithmDet", algDet);
+        json.put("algorithmReg", algReg);
+        json.put("imageBase64", imageBase64 != null ? Utils.hashSHA1(imageBase64) : null);
+        json.put("requestId", requestId);
+        json.put("flow", type);
+        return json.toString();
     }
 }
