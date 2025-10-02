@@ -1,27 +1,21 @@
 package com.mario.faceengine.service;
 
+import com.mario.faceengine.AbstractIntegrationTest;
 import com.mario.faceengine.config.AppConfig;
 import com.mario.faceengine.helpers.HttpClient;
 import com.mario.faceengine.model.*;
-import okhttp3.OkHttpClient;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mockStatic;
-import static org.mockito.Mockito.when;
 
-@SpringBootTest
-public class FaceServiceTest {
+public class FaceServiceTest extends AbstractIntegrationTest {
     private FaceRegistrationRequest mockFaceRegistrationRequest() {
         FaceRegistrationRequest request = new FaceRegistrationRequest();
 
@@ -54,12 +48,13 @@ public class FaceServiceTest {
     @Autowired
     FaceService faceService;
 
-    @Test
-    public void testFaceRegistration_Success() throws IOException {
+    @Autowired
+    private AppConfig appConfig;
 
+    @Test
+    public void testFaceRegistration_Success() {
         String expectedResponse = "{\"code\":\"0000\",\"message\":\"success\"}";
         String actualResponse = "";
-        AppConfig appConfig = AppConfig.getInstance();
         FaceRegistrationRequest params = mockFaceRegistrationRequest();
         try (MockedStatic<HttpClient> mockedHttpClient = mockStatic(HttpClient.class)) {
             mockedHttpClient.when(() ->
@@ -74,11 +69,9 @@ public class FaceServiceTest {
     }
 
     @Test
-    public void testFaceRegistration_NetworkError() throws IOException {
-
+    public void testFaceRegistration_NetworkError() {
         String expectedResponse = "{\"code\":\"E004\",\"message\":\"Network error occurred\"}";
         String actualResponse = "";
-        AppConfig appConfig = AppConfig.getInstance();
         FaceRegistrationRequest params = mockFaceRegistrationRequest();
         try (MockedStatic<HttpClient> mockedHttpClient = mockStatic(HttpClient.class)) {
             mockedHttpClient.when(() ->
@@ -93,12 +86,10 @@ public class FaceServiceTest {
     }
 
     @Test
-    public void testFaceSearch_Success() throws IOException {
-
+    public void testFaceSearch_Success() {
         String expectedResponse = "{\"code\":\"0000\",\"message\":\"success\",\"data\":{}}";
         String actualResponseCode = "";
         String actualResponseMessage = "";
-        AppConfig appConfig = AppConfig.getInstance();
         FaceSearchRequest params = mockFaceRecognizeRequest();
         try (MockedStatic<HttpClient> mockedHttpClient = mockStatic(HttpClient.class)) {
             mockedHttpClient.when(() ->
@@ -119,12 +110,10 @@ public class FaceServiceTest {
     }
 
     @Test
-    public void testFaceSearch_NetworkError() throws IOException {
-
+    public void testFaceSearch_NetworkError() {
         String expectedResponse = "{\"code\":\"E004\",\"message\":\"Network error occurred\",\"data\":{}}";
         String actualResponseCode = "";
         String actualResponseMessage = "";
-        AppConfig appConfig = AppConfig.getInstance();
         FaceSearchRequest params = mockFaceRecognizeRequest();
         try (MockedStatic<HttpClient> mockedHttpClient = mockStatic(HttpClient.class)) {
             mockedHttpClient.when(() ->

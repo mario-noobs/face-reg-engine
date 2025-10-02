@@ -17,6 +17,9 @@ public class FaceServiceImpl implements FaceService {
     @Autowired
     private FaceFeatureRepository faceFeatureRepository;
 
+    @Autowired
+    private AppConfig appConfig;
+
     @Override
     public FaceRegistrationResponse registerFace(FaceRegistrationRequest request) {
         String method = "registerFace";
@@ -25,7 +28,6 @@ public class FaceServiceImpl implements FaceService {
         LogUtils.logRequest(method, request.toString());
         FaceRegistrationResponse response = new FaceRegistrationResponse();
         try {
-            AppConfig appConfig = AppConfig.getInstance();
             JSONObject params = request.toJson();
             String dataResponse = HttpClient.post(appConfig.getFaceHostNameUrl() +
                     appConfig.getRegisterPath(), params.toString());
@@ -75,8 +77,7 @@ public class FaceServiceImpl implements FaceService {
         response.setUserId(request.getUserId());
         response.setRequestId(request.getRequestId());
         try {
-            AppConfig appConfig = AppConfig.getInstance();
-            org.json.JSONObject params = request.toJson();
+            JSONObject params = request.toJson();
             String dataResponse = HttpClient.post(appConfig.getFaceHostNameUrl() +
                     appConfig.getRecognizePath(), params.toString());
 
@@ -101,7 +102,6 @@ public class FaceServiceImpl implements FaceService {
         response.setRequestId(request.getRequestId());
         response.setUserId(request.getUserId());
         try {
-            AppConfig appConfig = AppConfig.getInstance();
             JSONObject params = new JSONObject();
             params.put("userId", request.getUserId());
             params.put("algorithm", request.getAlgorithm());
