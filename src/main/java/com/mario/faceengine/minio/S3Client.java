@@ -4,6 +4,7 @@ import com.mario.faceengine.config.AppConfig;
 import com.mario.faceengine.exception.ErrorCodeMessage;
 import com.mario.faceengine.exception.FaceException;
 import com.mario.faceengine.logging.LogUtils;
+import com.mario.faceengine.util.Timer;
 import io.minio.*;
 import io.minio.http.Method;
 import jakarta.annotation.Resource;
@@ -70,6 +71,8 @@ public class S3Client {
     }
 
     public void upload(String filePath, String imageBase64, AppConfig config) throws FaceException {
+        Timer timer = new Timer();
+        timer.start();
         LogUtils.logRequest("upload", filePath);
         if (filePath == null || filePath.isEmpty()) {
             throw new FaceException(ErrorCodeMessage.FILENAME_NOT_FOUND);
@@ -96,7 +99,7 @@ public class S3Client {
             throw new FaceException(ErrorCodeMessage.S3_UPLOAD_ERROR);
         }
 
-        LogUtils.logResponse("upload", "");
+        LogUtils.logResponse("upload", "", timer.end());
     }
 
 //    private MultipartFile handlePicCompress(MultipartFile file) throws Exception {

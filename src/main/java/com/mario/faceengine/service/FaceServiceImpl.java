@@ -6,6 +6,7 @@ import com.mario.faceengine.helpers.HttpClient;
 import com.mario.faceengine.logging.LogUtils;
 import com.mario.faceengine.model.*;
 import com.mario.faceengine.repository.FaceFeatureRepository;
+import com.mario.faceengine.util.Timer;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,11 @@ public class FaceServiceImpl implements FaceService {
 
     @Override
     public FaceRegistrationResponse registerFace(FaceRegistrationRequest request) {
-
+        String method = "registerFace";
+        Timer timer = new Timer();
+        timer.start();
+        LogUtils.logRequest(method, request.toString());
         FaceRegistrationResponse response = new FaceRegistrationResponse();
-
         try {
             AppConfig appConfig = AppConfig.getInstance();
             JSONObject params = request.toJson();
@@ -52,18 +55,20 @@ public class FaceServiceImpl implements FaceService {
                     response.setFaceEncodingBase64(data.getString("face_encoding_base64"));
                 }
             }
-
             // Save FaceFeature entity
         } catch (Exception e) {
             e.printStackTrace();
             response.setCode(ErrorCodeMessage.NETWORK_ERROR.getCode());
             response.setMessage(ErrorCodeMessage.NETWORK_ERROR.getMessage());
         }
+        LogUtils.logResponse(method, response.toString(), timer.end());
         return response;
     }
 
     @Override
     public FaceSearchResponse recognize(FaceSearchRequest request) {
+        Timer timer = new Timer();
+        timer.start();
         LogUtils.logRequest("recognize", request.getUserId());
         FaceSearchResponse response = new FaceSearchResponse();
         response.setFlow(request.getType());
@@ -71,11 +76,11 @@ public class FaceServiceImpl implements FaceService {
         response.setRequestId(request.getRequestId());
         try {
             AppConfig appConfig = AppConfig.getInstance();
-            JSONObject params = request.toJson();
+            org.json.JSONObject params = request.toJson();
             String dataResponse = HttpClient.post(appConfig.getFaceHostNameUrl() +
                     appConfig.getRecognizePath(), params.toString());
 
-            JSONObject jsonResponse = new JSONObject(dataResponse);
+            org.json.JSONObject jsonResponse = new org.json.JSONObject(dataResponse);
 
             response.setCode(jsonResponse.getString("code"));
             response.setMessage(jsonResponse.getString("message"));
@@ -86,7 +91,7 @@ public class FaceServiceImpl implements FaceService {
             response.setCode(ErrorCodeMessage.NETWORK_ERROR.getCode());
             response.setMessage(ErrorCodeMessage.NETWORK_ERROR.getMessage());
         }
-        LogUtils.logResponse("recognize", response.getSearchData().toString());
+        LogUtils.logResponse("recognize", response.getSearchData().toString(), timer.end());
         return response;
     }
 

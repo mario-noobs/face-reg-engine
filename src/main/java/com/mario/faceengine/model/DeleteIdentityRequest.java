@@ -1,5 +1,7 @@
 package com.mario.faceengine.model;
 
+import org.json.JSONObject;
+
 public class DeleteIdentityRequest {
     private String userId;
     private String algorithm;
@@ -14,12 +16,12 @@ public class DeleteIdentityRequest {
     public String getRequestId() { return requestId; }
     public void setRequestId(String requestId) { this.requestId = requestId; }
 
-  @Override
-  public String toString() {
-    return "DeleteIdentityRequest{" +
-        "userId='" + userId + '\'' +
-        ", algorithm='" + algorithm + '\'' +
-        ", requestId='" + requestId + '\'' +
-        '}';
-  }
+    @Override
+    public String toString() {
+        JSONObject json = new JSONObject();
+        json.put("userId", userId);
+        json.put("algorithm", algorithm);
+        json.put("requestId", requestId);
+        return json.toString();
+    }
 }

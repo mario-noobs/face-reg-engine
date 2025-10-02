@@ -1,5 +1,7 @@
 package com.mario.faceengine.model;
 
+import org.json.JSONObject;
+
 public class DeleteIdentityResponse extends BasicResponse {
     private String message;
     private String requestId;
@@ -17,4 +19,16 @@ public class DeleteIdentityResponse extends BasicResponse {
 
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
+
+    @Override
+    public String toString() {
+        JSONObject json = new JSONObject();
+        json.put("message", message);
+        json.put("requestId", requestId);
+        json.put("status", status);
+        json.put("userId", userId);
+        json.put("code", getCode());
+        json.put("messageSuper", getMessage());
+        return json.toString();
+    }
 }
